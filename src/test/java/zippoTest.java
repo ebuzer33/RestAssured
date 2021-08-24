@@ -27,10 +27,9 @@ public class zippoTest {
                 .when()
                 .get("http://api.zippopotam.us/us/90210")
                 .then()
-        //.log().all() tum respons u gosterir
-        .log().body()
-        .statusCode(200)
-
+                //.log().all() tum respons u gosterir
+                .log().body()
+                .statusCode(200)
         ;
     }
 
@@ -59,5 +58,20 @@ public class zippoTest {
                 .log().body()
 
                 ;
+    }
+
+    @Test
+    public void checkStateInResponseBody()
+    {
+        given()
+
+                .when()
+                .get("http://api.zippopotam.us/us/90210")
+
+                .then()
+                .log().body()
+                .body("country",equalTo("United States"))
+                .statusCode(200)
+        ;
     }
 }
