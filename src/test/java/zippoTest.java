@@ -1,4 +1,3 @@
-
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.*;
@@ -17,5 +16,23 @@ public class zippoTest {
                 .then()
                 // test ve extract islemleri
         ;
+    }
+
+    @Test
+    public void statusCodeTest()
+    {
+        given()
+
+                .when()
+                .get("http://api.zippopotam.us/us/90210")
+                .then()
+        //.log().all() tum respons u gosterir
+        .log().body()
+        .statusCode(200)
+
+        ;
+
+
+
     }
 }
