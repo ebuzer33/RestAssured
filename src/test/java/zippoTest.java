@@ -101,9 +101,133 @@ public class zippoTest {
 
                 .then()
                 .log().body()
-                .body("places.'state'", hasItem("California1"))
+                .body("places.state", hasItem("California"))
                 .statusCode(200)
         ;
     }
 
+    @Test
+    public void bodyJsonPathTest2()
+    {
+        given()
+
+                .when()
+                .get("http://api.zippopotam.us/us/90210")
+
+                .then()
+                .log().body()
+                .body("places[0].'place name'", equalTo("Beverly Hills"))
+                .statusCode(200)
+        ;
+    }
+
+    @Test
+    public void bodyArrayHasSizeTest()
+    {
+        given()
+
+                .when()
+                .get("http://api.zippopotam.us/us/90210")
+
+                .then()
+                .log().body()
+                .body("places", hasSize(1))
+
+                .statusCode(200)
+        ;
+    }
+    @Test
+    public void combiningTest()
+    {
+        given()
+
+                .when()
+                .get("http://api.zippopotam.us/us/90210")
+
+                .then()
+                .log().body()
+                .body("places", hasSize(1))
+                .body("places.state", hasItem("California"))
+                .body("places[0].'place name'", equalTo("Beverly Hills"))
+                .statusCode(200)
+        ;
+    }
+
+    @Test
+    public void pathParamTest()
+    {
+        given()
+                .pathParam("country","us")
+                .pathParam("zipcode","90210")
+                .log().uri()
+
+                .when()
+                .get("http://api.zippopotam.us/{country}/{zipcode}")
+
+                .then()
+                .log().body()
+                .body("places", hasSize(1))
+                .statusCode(200)
+        ;
+    }
+
+    @Test
+    public void pathParamTest2() {
+        String country = "us";
+
+        for (int i = 90210; i < 90214; i++) {
+
+            given()
+                    .pathParam("country", country)
+                    .pathParam("zipcode", i)
+                    .log().uri()
+
+                    .when()
+                    .get("http://api.zippopotam.us/{country}/{zipcode}")
+
+                    .then()
+                    .log().body()
+                    .body("places", hasSize(1))
+                    .statusCode(200)
+            ;
+        }
+    }
+
+    @Test
+    public void queryParamTest2() {
+        // https://gorest.co.in/public/v1/users?page=1
+
+            given()
+                    .param("page", 1)
+                    .log().uri()
+
+                    .when()
+                    .get("https://gorest.co.in/public/v1/users")
+
+                    .then()
+                    .log().body()
+                    .body("meta.pagination.page", equalTo(1))
+                    .statusCode(200)
+            ;
+
+    }
+
+    @Test
+    public void queryParamTest3() {
+        // https://gorest.co.in/public/v1/users?page=1
+        for (int i = 1; i < 10; i++) {
+            given()
+                    .param("page", i)
+                    .log().uri()
+
+                    .when()
+                    .get("https://gorest.co.in/public/v1/users")
+
+                    .then()
+                    .log().body()
+                    .body("meta.pagination.page", equalTo(i))
+                    .statusCode(200)
+            ;
+        }
+    }
 }
