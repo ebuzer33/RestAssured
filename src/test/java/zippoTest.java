@@ -1,4 +1,7 @@
+import io.restassured.builder.ResponseSpecBuilder;
+import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
+import io.restassured.specification.ResponseSpecification;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -232,10 +235,17 @@ public class zippoTest {
         }
     }
 
+    private ResponseSpecification responseSpecification;
     @BeforeClass
     public void setup()
     {
         baseURI="http://api.zippopotam.us";
+        responseSpecification= new ResponseSpecBuilder()
+                .expectStatusCode(200)
+                .expectContentType(ContentType.JSON)
+                .log(LogDetail.BODY)
+                .build()
+                ;
     }
 
     @Test
@@ -250,6 +260,20 @@ public class zippoTest {
                 .log().body()
                 .body("places", hasSize(1))
                 .statusCode(200)
+        ;
+    }
+
+    @Test
+    public void responseSpecificationTest()
+    {
+        given()
+                .log().uri()
+                .when()
+                .get("/us/90210")
+
+                .then()
+                .body("places", hasSize(1))
+                .spec(responseSpecification)
         ;
     }
 }
