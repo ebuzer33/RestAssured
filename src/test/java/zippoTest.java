@@ -1,4 +1,5 @@
 import io.restassured.http.ContentType;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.*;
@@ -229,5 +230,26 @@ public class zippoTest {
                     .statusCode(200)
             ;
         }
+    }
+
+    @BeforeClass
+    public void setup()
+    {
+        baseURI="http://api.zippopotam.us";
+    }
+
+    @Test
+    public void baseUriTest()
+    {
+        given()
+                .log().uri()
+                .when()
+                .get("/us/90210")
+
+                .then()
+                .log().body()
+                .body("places", hasSize(1))
+                .statusCode(200)
+        ;
     }
 }
