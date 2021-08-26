@@ -298,4 +298,38 @@ public class zippoTest {
                 .spec(responseSpecification)
         ;
     }
+
+    @Test
+    public void extractingJsonPath()
+    {
+        String place_name= given()
+                .spec(requestSpecification)
+                .when()
+                .get("/us/90210")
+                .then()
+                .spec(responseSpecification)
+                .extract().path("places[0].'place name'")
+        ;
+        System.out.println("place name = "+ place_name);
+    }
+
+    @Test
+    public void extractingJsonPath2() {
+
+        int limit=
+        given()
+                .param("page", 1)
+                .log().uri()
+
+                .when()
+                .get("https://gorest.co.in/public/v1/users")
+
+                .then()
+                .log().body()
+                .extract().path("meta.pagination.limit")
+        ;
+
+        System.out.println("limit = "+ limit);
+
+    }
 }
