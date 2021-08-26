@@ -4,8 +4,11 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.util.List;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
@@ -331,5 +334,60 @@ public class zippoTest {
 
         System.out.println("limit = "+ limit);
 
+    }
+
+    @Test
+    public void extractingJsonPathIntList() {
+
+        List<Integer> idler=
+                given()
+                        .param("page", 1)
+                        .log().uri()
+
+                        .when()
+                        .get("https://gorest.co.in/public/v1/users")
+
+                        .then()
+                        .log().body()
+                        .extract().path("data.id")
+                ;
+
+        System.out.println("idler = "+idler);
+
+    }
+
+    @Test
+    public void extractingJsonPathStringList() {
+
+        List<String> emailler=
+                given()
+                        .param("page", 1)
+                        .log().uri()
+
+                        .when()
+                        .get("https://gorest.co.in/public/v1/users")
+
+                        .then()
+                        .log().body()
+                        .extract().path("data.email")
+                ;
+
+        System.out.println("emailler= "+emailler);
+
+    }
+
+    @Test
+    public void extractingJsonPathStringList2()
+    {
+        List<String> koyler= given()
+                .spec(requestSpecification)
+                .when()
+                .get("/tr/01000")
+                .then()
+                .spec(responseSpecification)
+                .extract().path("places.'place name'")
+                ;
+        System.out.println("koyler = "+ koyler);
+        Assert.assertTrue(koyler.contains("Büyükdikili Köyü"));
     }
 }
