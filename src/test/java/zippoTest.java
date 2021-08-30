@@ -19,12 +19,12 @@ public class zippoTest {
     public void test()
     {
         given()
-                // hazirlik islemleri
+                // preparatory operations
                 .when()
-                // link ve aksiyon islemleri
+                // link and action actions
 
                 .then()
-                // test ve extract islemleri
+                // test and extract operations
         ;
     }
 
@@ -36,7 +36,7 @@ public class zippoTest {
                 .when()
                 .get("http://api.zippopotam.us/us/90210")
                 .then()
-                //.log().all() tum respons u gosterir
+                //.log().all() shows all response
                 .log().body()
                 .statusCode(200)
         ;
@@ -339,7 +339,7 @@ public class zippoTest {
     @Test
     public void extractingJsonPathIntList() {
 
-        List<Integer> idler=
+        List<Integer> ids=
                 given()
                         .param("page", 1)
                         .log().uri()
@@ -352,14 +352,14 @@ public class zippoTest {
                         .extract().path("data.id")
                 ;
 
-        System.out.println("idler = "+idler);
+        System.out.println("ids = "+ids);
 
     }
 
     @Test
     public void extractingJsonPathStringList() {
 
-        List<String> emailler=
+        List<String> emails=
                 given()
                         .param("page", 1)
                         .log().uri()
@@ -372,14 +372,14 @@ public class zippoTest {
                         .extract().path("data.email")
                 ;
 
-        System.out.println("emailler= "+emailler);
+        System.out.println("emails= "+emails);
 
     }
 
     @Test
     public void extractingJsonPathStringList2()
     {
-        List<String> koyler= given()
+        List<String> villages= given()
                 .spec(requestSpecification)
                 .when()
                 .get("/tr/01000")
@@ -387,7 +387,7 @@ public class zippoTest {
                 .spec(responseSpecification)
                 .extract().path("places.'place name'")
                 ;
-        System.out.println("koyler = "+ koyler);
-        Assert.assertTrue(koyler.contains("Büyükdikili Köyü"));
+        System.out.println("villages = "+ villages);
+        Assert.assertTrue(villages.contains("Büyükdikili Köyü"));
     }
 }
