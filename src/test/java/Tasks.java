@@ -11,6 +11,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static io.restassured.RestAssured.*;
@@ -165,6 +166,58 @@ User user=
         System.out.println("user.getUserId() = " + user.getUserId());
         System.out.println("user.getId() = " + user.getId());
         System.out.println("user.getTitle() = " + user.getTitle());
+    }
+
+
+
+
+
+    @Test
+    public void task7()
+    /** Task 7 - Ödev 1
+     * create a request to https://jsonplaceholder.typicode.com/todos
+     * expect status 200
+     * Converting Array Into Array of POJOs
+     */
+    {
+        User[] users=
+                given()
+
+                        .when()
+                        .get("https://jsonplaceholder.typicode.com/todos")
+
+                        .then()
+                        //.log().body()
+                        .extract().as(User[].class)
+                ;
+
+        System.out.println("users = " + Arrays.toString(users));
+    }
+
+
+
+    @Test
+    public void task8()
+    /** Task 8 - Ödev 2
+     * create a request to https://jsonplaceholder.typicode.com/todos
+     * expect status 200
+     * Converting Array Into List of POJOs
+     */
+    {
+        User[] users=
+                given()
+
+                        .when()
+                        .get("https://jsonplaceholder.typicode.com/todos")
+
+                        .then()
+                        //.log().body()
+                        .extract().as(User[].class)
+                ;
+
+        List<User> usersList= Arrays.asList(users);
+
+        System.out.println("users = " + usersList);
     }
 
 
