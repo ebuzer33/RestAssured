@@ -1,7 +1,5 @@
 package goRest.Model;
 
-import java.util.List;
-
 public class Meta {
 
     private Pagination pagination;

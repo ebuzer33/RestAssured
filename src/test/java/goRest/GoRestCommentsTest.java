@@ -2,17 +2,13 @@ package goRest;
 
 import goRest.Model.CommentsBody;
 import goRest.Model.Comments;
-import goRest.Model.User;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
 public class GoRestCommentsTest {
 
@@ -22,7 +18,7 @@ public class GoRestCommentsTest {
               as a List with the help of an object.
      */
 
-    @Test
+    @Test(enabled = false)
     public void getCommentsResponse() {
         Response returnedResult =
                 given()
@@ -41,7 +37,7 @@ public class GoRestCommentsTest {
 
     }
 
-    @Test
+    @Test(enabled = false)
     public void getComments() {
         List<Comments> commentsList =
                 given()
@@ -58,7 +54,7 @@ public class GoRestCommentsTest {
      Task 2 : Get a list of emails from all Comments and
               verify that it contains "acharya_rajinder@ankunding.biz".
      **/
-    @Test
+    @Test(enabled = false)
     public void getEmailList() {
 
          Response returnedResult =
@@ -79,7 +75,7 @@ public class GoRestCommentsTest {
 
     }
 
-    @Test
+    @Test(enabled = false)
     public void getEmailList2() {
 
         List<String> emailList=
@@ -100,7 +96,7 @@ public class GoRestCommentsTest {
      from api convert all returned data into a single object
      **/
 
-    @Test
+    @Test()
     public void task3() {
         CommentsBody commentsBody =
                 given()
@@ -124,13 +120,13 @@ public class GoRestCommentsTest {
     */
 
     @Test
-    public void createCommentBodyObject() {
+    public void createComment() {
+
         Comments newComment = new Comments();
         newComment.setName("Jamal");
         newComment.setEmail("jamal@gmail.com");
         newComment.setBody("afjafaniwogwfiwnf");
 
-        List<Comments> comments =
                 given()
                         .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
                         .contentType(ContentType.JSON)
@@ -141,11 +137,91 @@ public class GoRestCommentsTest {
 
                         .then()
                         .log().body()
-                        .contentType(ContentType.JSON)
-                        .extract().jsonPath().getList("Comments")
+                        .extract().jsonPath().getInt("data.id")
         ;
 
-        System.out.println("comments = " + comments);
+    }
+/**
+    Comments Update
+    PUT https://gorest.co.in/public/v1/comments/1394
+
+    {
+      "body": "afjafaniwogwfiwnf"
+    }
+ */
+
+@Test(enabled = false)
+public void commentUpdate() {
+
+    String body = "updated comment";
+
+    given()
+            .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+            .contentType(ContentType.JSON)
+            .body("{\"body\":\"" + body + "\"}")
+
+            .when()
+            .put("https://gorest.co.in/public/v1/comments/1446")
+
+            .then()
+            .log().body()
+    ;
+   Assert.assertTrue(body.equalsIgnoreCase("updated comment"));
+}
+
+    int commentId;
+    @Test(dependsOnMethods = "createComment",priority = 2)
+    public void commentUpdate2() {
+
+        String body = "updated comment";
+
+        given()
+                .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                .contentType(ContentType.JSON)
+                .body("{\"body\":\"" + body + "\"}")
+                .pathParam("commentId",commentId)
+                .log().body()
+
+                .when()
+                .put("https://gorest.co.in/public/v1/comments/{commentId}")
+
+                .then()
+                .log().body()
+                .body("data.body",equalTo(body))
+        ;
+
+    }
+
+    @Test(dependsOnMethods ="createComment", priority = 3)
+    public void deleteComment() {
+
+        given()
+                .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                .pathParam("commendId", commentId)
+
+                .when()
+                .delete("https://gorest.co.in/public/v1/comments/{commentId}")
+
+                .then()
+                .statusCode(204)
+                .log().body()
+        ;
+    }
+
+    @Test(dependsOnMethods ="createComment", priority = 4)
+    public void deleteCommentNegative() {
+
+        given()
+                .header("Authorization", "Bearer 36e95c8fd3e7eb89a65bad6edf4c0a62ddb758f9ed1e15bb98421fb0f1f3e57f")
+                .pathParam("commentId", commentId)
+
+                .when()
+                .delete("https://gorest.co.in/public-api/v1/comments/{commentId}")
+
+                .then()
+                .statusCode(404)
+                .log().body()
+        ;
     }
 
 }

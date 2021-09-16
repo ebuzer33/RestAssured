@@ -5,11 +5,9 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.Test;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -123,7 +121,7 @@ public class goRestUsersTests {
                 .pathParam("userID", userID)
 
                 .when()
-                .delete("https://gorest.co.in/public/v1/users/{userID}")
+                .delete("https://gorest.co.in/public-api/users/{userID}")
 
                 .then()
                 .log().body()
